@@ -212,7 +212,7 @@ public class Generar2 extends JFrame {
     }//GEN-LAST:event_BotonPausaActionPerformed
 
     private void BotonIniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonIniciarMouseClicked
-
+            //miguel es pato
     }//GEN-LAST:event_BotonIniciarMouseClicked
 //metodos
 
