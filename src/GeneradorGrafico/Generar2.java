@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import laberinto3.Logica;
 
 import java.util.Timer;//24/02/2015 ficha de colocacion
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 //import javax.swing.Timer;
 
@@ -22,8 +24,10 @@ import javax.swing.JOptionPane;
  *
  * @author MujicaM
  */
-public class Generar2 extends JFrame {
-
+public class Generar2 extends JFrame implements Runnable {
+// boolean que pondremos a false cuando queramos parar el hilo
+   private boolean continuar = true;
+   private Thread hilo1,hilo2,hilo3;
     /**
      * Creates new form Generar2
      */
@@ -80,11 +84,6 @@ public class Generar2 extends JFrame {
         BotonIniciar.setForeground(new java.awt.Color(51, 51, 51));
         BotonIniciar.setText("Iniciar juego");
         BotonIniciar.setPreferredSize(new java.awt.Dimension(120, 120));
-        BotonIniciar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                BotonIniciarMouseClicked(evt);
-            }
-        });
         BotonIniciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BotonIniciarActionPerformed(evt);
@@ -189,6 +188,7 @@ public class Generar2 extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonIniciarActionPerformed
+      
         if (estado) {
             JOptionPane.showMessageDialog(null, "mamaste");
         } else {
@@ -200,22 +200,27 @@ public class Generar2 extends JFrame {
             PuntosPac1.setText(Integer.toString(LaberintoVirtual.getPa().getPuntos()));
 
             GenerardorGrafico();
-
+                hilo1 = new Thread(this);
+               hilo2 = new Thread(this);
+                //hilo3 = new Thread(this);
+                  
+                hilo1.start();
+                hilo2.start();
+                //hilo3.start();
             int h = 10;
-            accion(i, j);
-            MoverFantasma1(f1_i, f1_j);
+           
         }
     }//GEN-LAST:event_BotonIniciarActionPerformed
 
     private void BotonPausaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonPausaActionPerformed
-
+        detenElHilo();
     }//GEN-LAST:event_BotonPausaActionPerformed
-
-    private void BotonIniciarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BotonIniciarMouseClicked
-            //miguel es pato y la tuya tambn
-    }//GEN-LAST:event_BotonIniciarMouseClicked
 //metodos
-
+  public void detenElHilo()
+   {
+      continuar=false;
+     
+   }
     public void GenerardorGrafico() {
         //Aqui reubicamos el tablero ya que se encuentra invertida originalmente**********************************************************************   
         Object aux[][] = new Object[30][30];//Matriz auxliar para ordenar bn el tablero
@@ -302,6 +307,7 @@ public class Generar2 extends JFrame {
 //mover pacman original
 
     public void MoverPacman(KeyEvent evt) throws InterruptedException {
+        
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_UP: {//mover a arriba        
                 if (LaberintoVirtual.getM()[i][j - 1] != LaberintoVirtual.getMu()) {
@@ -706,6 +712,7 @@ public class Generar2 extends JFrame {
     }
 
     public void accion(int i, int j) {
+        
         BotonIniciar.addKeyListener(new KeyListener() {
 
             @Override
@@ -728,14 +735,15 @@ public class Generar2 extends JFrame {
             }
         });
         setFocusable(true);
+        
     }
 
     public void MoverFantasma1(int i, int j) {
-        for (int k = 0; k < 1000; k++) {
+        while(continuar){
             int direccion = 0;
             Random random = new Random();
             direccion = random.nextInt(4);
-            System.out.println("4");
+            System.out.println(direccion);
             switch (direccion) {
                 case 0:
                     if (LaberintoVirtual.getM()[i][(j - 1)] != LaberintoVirtual.getMu()) {
@@ -745,6 +753,7 @@ public class Generar2 extends JFrame {
 
                         LaberintoVirtual.getM()[i][(j + 1)] = LaberintoVirtual.getCa();
                         grafico[i][(j + 1)].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j + 1) + ".jpg")));
+                        
                     } else {
                         System.out.println("Hay muro no se mueve");
                     }
@@ -788,9 +797,75 @@ public class Generar2 extends JFrame {
                 default:
                     System.out.println("No presionaste ninguna tecla");
             }
+             try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                System.out.println(ex);
+            }
+            
         }
     }
+public void pintar(){
 
+ try {
+            for (int i = 0; i < 30; i++) {
+                for (int j = 0; j < 30; j++) {
+                    grafico[i][j] = new JLabel();
+                    PanelDelLaberinto.add(grafico[i][j]);
+                    //si es muro
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getMu()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es fruta
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getCc()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es calle
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getCa()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es calle y punto
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getCp()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es pacman amarillo
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getPa()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Pacman/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es Fantasma1
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getF1()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es Fantasma2
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getF2()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es Fantasma3
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getF3()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                    //si es Fantasma4
+                    if (LaberintoVirtual.getM()[i][j] == LaberintoVirtual.getF4()) {
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("adentro del for 3 esta el error");
+        }
+
+        try {
+            for (int i = 0; i < 30; i++) {
+                for (int j = 0; j < 30; j++) {
+                    grafico[i][j].setBounds(i * 20, j * 20, 20, 20);
+                    grafico[i][j].validate();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("adentro del for 4 esta el error");
+        }
+
+}
 //fin de metodos
     /**
      * @param args the command line arguments
@@ -831,5 +906,35 @@ public class Generar2 extends JFrame {
     private javax.swing.JLabel VidasPac1;
     private javax.swing.JSeparator jSeparator2;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+//        while(continuar){
+//        accion(i, j);
+//        MoverFantasma1(f1_i, f1_j);
+//       
+//        }
+        Thread ct = Thread.currentThread();
+//            while (ct == hilo1) {
+//
+//        
+//      
+//           
+//
+//            }
+
+            while (ct == hilo2) {
+                 accion(i, j);
+            MoverFantasma1(f1_i, f1_j);
+           
+           
+            }
+//
+//            while (ct == hilo3) {
+//
+//          
+// 
+//            }
+    }
 
 }
