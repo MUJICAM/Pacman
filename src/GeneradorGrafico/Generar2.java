@@ -193,7 +193,7 @@ public class Generar2 extends JFrame implements Runnable {
             JOptionPane.showMessageDialog(null, "mamaste");
         } else {
             LaberintoVirtual.getM()[28][1] = LaberintoVirtual.getPa();
-            LaberintoVirtual.getM()[f1_i][f1_j] = LaberintoVirtual.getF1();
+          
 
             NamePac1.setText(LaberintoVirtual.getPa().getNombre());
             VidasPac1.setText(Integer.toString(LaberintoVirtual.getPa().getVida()));
@@ -805,6 +805,73 @@ public class Generar2 extends JFrame implements Runnable {
             
         }
     }
+    public void MoverFantasma2(int i, int j) {
+        while(continuar){
+            int direccion = 0;
+            Random random = new Random();
+            direccion = random.nextInt(4);
+            System.out.println(direccion);
+            switch (direccion) {
+                case 0:
+                    if (LaberintoVirtual.getM()[i][(j - 1)] != LaberintoVirtual.getMu()) {
+                        j--;
+                        LaberintoVirtual.getM()[i][j] = LaberintoVirtual.getF2();
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+
+                        LaberintoVirtual.getM()[i][(j + 1)] = LaberintoVirtual.getCa();
+                        grafico[i][(j + 1)].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j + 1) + ".jpg")));
+                        
+                    } else {
+                        System.out.println("Hay muro no se mueve");
+                    }
+                    break;
+                case 1:
+                    if (LaberintoVirtual.getM()[i][(j + 1)] != LaberintoVirtual.getMu()) {
+                        j++;
+                        LaberintoVirtual.getM()[i][j] = LaberintoVirtual.getF2();
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+
+                        LaberintoVirtual.getM()[i][(j - 1)] = LaberintoVirtual.getCa();
+                        grafico[i][(j - 1)].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j - 1) + ".jpg")));
+                    } else {
+                        System.out.println("Hay muro no se mueve");
+                    }
+                    break;
+                case 2:
+                    if (LaberintoVirtual.getM()[(i - 1)][j] != LaberintoVirtual.getMu()) {
+                        i--;
+                        LaberintoVirtual.getM()[i][j] = LaberintoVirtual.getF2();
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+
+                        LaberintoVirtual.getM()[(i + 1)][j] = LaberintoVirtual.getCa();
+                        grafico[(i + 1)][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i + 1, j) + ".jpg")));
+                    } else {
+                        System.out.println("Hay muro no se mueve");
+                    }
+                    break;
+                case 3:
+                    if (LaberintoVirtual.getM()[(i + 1)][j] != LaberintoVirtual.getMu()) {
+                        i++;
+                        LaberintoVirtual.getM()[i][j] = LaberintoVirtual.getF2();
+                        grafico[i][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Fantasma/" + LaberintoVirtual.CodigoImagen(i, j) + ".jpg")));
+
+                        LaberintoVirtual.getM()[(i - 1)][j] = LaberintoVirtual.getCa();
+                        grafico[(i - 1)][j].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i - 1, j) + ".jpg")));
+                    } else {
+                        System.out.println("Hay muro no se mueve");
+                    }
+                    break;
+                default:
+                    System.out.println("No presionaste ninguna tecla");
+            }
+             try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                System.out.println(ex);
+            }
+            
+        }
+    }
 public void pintar(){
 
  try {
@@ -915,18 +982,18 @@ public void pintar(){
 //       
 //        }
         Thread ct = Thread.currentThread();
-//            while (ct == hilo1) {
-//
+            while (ct == hilo1) {
+                    MoverFantasma2(f2_i, f2_j);
 //        
 //      
 //           
 //
-//            }
+            }
 
             while (ct == hilo2) {
                  accion(i, j);
             MoverFantasma1(f1_i, f1_j);
-           
+            
            
             }
 //
