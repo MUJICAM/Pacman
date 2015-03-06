@@ -26,8 +26,9 @@ import javax.swing.JOptionPane;
  */
 public class Generar2 extends JFrame implements Runnable {
 // boolean que pondremos a false cuando queramos parar el hilo
-   private boolean continuar = true;
-   private Thread hilo1,hilo2,hilo3;
+
+    private boolean continuar = true;
+    private Thread hilo1, hilo2, hilo3;
     /**
      * Creates new form Generar2
      */
@@ -188,39 +189,46 @@ public class Generar2 extends JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BotonIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonIniciarActionPerformed
-      
+
         if (estado) {
             JOptionPane.showMessageDialog(null, "mamaste");
         } else {
             LaberintoVirtual.getM()[28][1] = LaberintoVirtual.getPa();
-          
 
             NamePac1.setText(LaberintoVirtual.getPa().getNombre());
             VidasPac1.setText(Integer.toString(LaberintoVirtual.getPa().getVida()));
             PuntosPac1.setText(Integer.toString(LaberintoVirtual.getPa().getPuntos()));
 
             GenerardorGrafico();
-                hilo1 = new Thread(this);
-               hilo2 = new Thread(this);
+            hilo1 = new Thread(this);
+            hilo2 = new Thread(this);
                 //hilo3 = new Thread(this);
-                  
-                hilo1.start();
-                hilo2.start();
-                //hilo3.start();
-            int h = 10;
-           
+
+            hilo1.start();
+            hilo2.start();
+            //hilo3.start();
         }
     }//GEN-LAST:event_BotonIniciarActionPerformed
 
     private void BotonPausaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonPausaActionPerformed
-        detenElHilo();
+            hilo1.suspend();
+            hilo2.suspend();
+        int n = (Integer) JOptionPane.showConfirmDialog(null, "¿¿Desea Continuar??", "Pausa", JOptionPane.YES_OPTION);
+
+        if (n == 0) {
+            continuar= true;
+            hilo1.resume();
+            hilo2.resume();
+        }
+
     }//GEN-LAST:event_BotonPausaActionPerformed
 //metodos
-  public void detenElHilo()
-   {
-      continuar=false;
-     
-   }
+
+    public void detenElHilo() {
+        continuar = false;
+
+    }
+
     public void GenerardorGrafico() {
         //Aqui reubicamos el tablero ya que se encuentra invertida originalmente**********************************************************************   
         Object aux[][] = new Object[30][30];//Matriz auxliar para ordenar bn el tablero
@@ -307,7 +315,7 @@ public class Generar2 extends JFrame implements Runnable {
 //mover pacman original
 
     public void MoverPacman(KeyEvent evt) throws InterruptedException {
-        
+
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_UP: {//mover a arriba        
                 if (LaberintoVirtual.getM()[i][j - 1] != LaberintoVirtual.getMu()) {
@@ -712,7 +720,7 @@ public class Generar2 extends JFrame implements Runnable {
     }
 
     public void accion(int i, int j) {
-        
+
         BotonIniciar.addKeyListener(new KeyListener() {
 
             @Override
@@ -735,15 +743,14 @@ public class Generar2 extends JFrame implements Runnable {
             }
         });
         setFocusable(true);
-        
+
     }
 
     public void MoverFantasma1(int i, int j) {
-        while(continuar){
+        while (continuar) {
             int direccion = 0;
             Random random = new Random();
             direccion = random.nextInt(4);
-            System.out.println(direccion);
             switch (direccion) {
                 case 0:
                     if (LaberintoVirtual.getM()[i][(j - 1)] != LaberintoVirtual.getMu()) {
@@ -753,7 +760,7 @@ public class Generar2 extends JFrame implements Runnable {
 
                         LaberintoVirtual.getM()[i][(j + 1)] = LaberintoVirtual.getCa();
                         grafico[i][(j + 1)].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j + 1) + ".jpg")));
-                        
+
                     } else {
                         System.out.println("Hay muro no se mueve");
                     }
@@ -797,16 +804,17 @@ public class Generar2 extends JFrame implements Runnable {
                 default:
                     System.out.println("No presionaste ninguna tecla");
             }
-             try {
+            try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
                 System.out.println(ex);
             }
-            
+
         }
     }
+
     public void MoverFantasma2(int i, int j) {
-        while(continuar){
+        while (continuar) {
             int direccion = 0;
             Random random = new Random();
             direccion = random.nextInt(4);
@@ -820,7 +828,7 @@ public class Generar2 extends JFrame implements Runnable {
 
                         LaberintoVirtual.getM()[i][(j + 1)] = LaberintoVirtual.getCa();
                         grafico[i][(j + 1)].setIcon(new ImageIcon(getClass().getResource("Grafico/Imagenes/Casilla/" + LaberintoVirtual.CodigoImagen(i, j + 1) + ".jpg")));
-                        
+
                     } else {
                         System.out.println("Hay muro no se mueve");
                     }
@@ -864,17 +872,18 @@ public class Generar2 extends JFrame implements Runnable {
                 default:
                     System.out.println("No presionaste ninguna tecla");
             }
-             try {
+            try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
                 System.out.println(ex);
             }
-            
+
         }
     }
-public void pintar(){
 
- try {
+    public void pintar() {
+
+        try {
             for (int i = 0; i < 30; i++) {
                 for (int j = 0; j < 30; j++) {
                     grafico[i][j] = new JLabel();
@@ -932,8 +941,9 @@ public void pintar(){
             System.out.println("adentro del for 4 esta el error");
         }
 
-}
+    }
 //fin de metodos
+
     /**
      * @param args the command line arguments
      */
@@ -982,20 +992,22 @@ public void pintar(){
 //       
 //        }
         Thread ct = Thread.currentThread();
-            while (ct == hilo1) {
-                    MoverFantasma2(f2_i, f2_j);
+        while (ct == hilo1) {
+            MoverFantasma2(f2_i, f2_j);
 //        
 //      
 //           
 //
-            }
+        }
 
-            while (ct == hilo2) {
-                 accion(i, j);
+        while (ct == hilo2) {
+            accion(i, j);
             MoverFantasma1(f1_i, f1_j);
-            
-           
-            }
+//            MoverFantasma2(f2_i, f2_j);
+//            MoverFantasma3(f3_i, f3_j);
+//            MoverFantasma4(f4_i, f4_j);
+
+        }
 //
 //            while (ct == hilo3) {
 //
